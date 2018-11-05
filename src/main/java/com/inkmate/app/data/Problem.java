@@ -4,7 +4,12 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+@Entity
+@Table(name="Problem")
 @Data
 public class Problem {
 
@@ -41,4 +46,7 @@ public class Problem {
     @Column(name="RecordUpdateTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date recordUpdateTime;
+
+    @OneToMany(mappedBy="problem")
+    private Set<ProblemExample> examples = new HashSet<ProblemExample>();
 }

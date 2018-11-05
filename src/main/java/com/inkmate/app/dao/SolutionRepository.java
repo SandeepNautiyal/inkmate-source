@@ -20,6 +20,7 @@ import java.util.Optional;
 @Repository
 public interface SolutionRepository extends JpaRepository<Solution, Long> {
 
-    @Query("SELECT  all FROM  Solution u INNER JOIN SolutionReaction a ON a.SolutionId = u.SolutionId WHERE a.SolutionId = :solutionId")
+    @Query(value = "SELECT u, a FROM  Solution u INNER JOIN SolutionReaction a ON a.SolutionId = u.SolutionId WHERE a.SolutionId = :solutionId"
+        , nativeQuery = true)
     Solution findSolution(@Param("solutionId") long solutionId);
 }

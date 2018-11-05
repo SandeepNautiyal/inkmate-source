@@ -1,12 +1,13 @@
 package com.inkmate.app.start;
 
 import com.inkmate.app.data.CombinedEntity;
+import com.inkmate.app.data.ProblemList;
 import com.inkmate.app.data.Solution;
 import com.inkmate.app.exception.ProcessingException;
-import com.inkmate.app.reponse.InkmateResponse;
 import com.inkmate.app.service.GitService;
 import com.inkmate.app.service.ProcessingSerivce;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,25 +29,45 @@ public class InkmateApi {
     @Autowired
     private ProcessingSerivce service;
 
-    @RequestMapping(value="/findSolution/{title}", method = GET, produces = "application/json")
-    public ResponseEntity<InkmateResponse> findSolution(@PathVariable("title") String title) {
+    @RequestMapping(value="/title/{title}", method = GET, produces = "application/json")
+    public ResponseEntity<CombinedEntity> findSolution(@PathVariable("title") String title) {
         System.out.println("findSolution -> title="+title);
+        CombinedEntity entity = null;
         try {
-            CombinedEntity entity =  service.findSolution(title);
+             entity =  service.findSolution(title);
         } catch (ProcessingException e) {
             e.printStackTrace();
         }
 
         //System.out.println("repo ==================== "+repo.findAll());
-        return null;
+        return new ResponseEntity<CombinedEntity>(entity, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/findSolution/{id}", method = GET, produces = "application/json")
-    public ResponseEntity<InkmateResponse> findSolution(@PathVariable("id") long id) {
+    @RequestMapping(value="/id/{id}", method = GET, produces = "application/json")
+    public ResponseEntity<CombinedEntity> findSolution(@PathVariable("id") long id) {
         System.out.println("findSolution -> title="+id);
+        CombinedEntity entity = null;
+        try {
+            entity =  service.findSolution(id);
+        } catch (ProcessingException e) {
+            e.printStackTrace();
+        }
 
         //System.out.println("repo ==================== "+repo.findAll());
-        return null;
+        return new ResponseEntity<CombinedEntity>(entity, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/list/{title}", method = GET, produces = "application/json")
+    public ResponseEntity<ProblemList> listMatchingProblems(@PathVariable("title") String title) {
+        System.out.println("findSolution -> title="+title);
+        ProblemList entity = null;
+        try {
+            entity =  service.findMatchingProblems(title);
+        } catch (ProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<ProblemList>(entity, HttpStatus.OK);
     }
 }
 

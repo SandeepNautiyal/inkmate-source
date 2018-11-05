@@ -8,6 +8,8 @@ import java.util.List;
 public class CombinedEntity {
     private final Problem prob;
 
+    private ProblemExample example;
+
     private final List<Solution> solutions;
 
     public CombinedEntity(Problem prob, List<Solution> solutions) {

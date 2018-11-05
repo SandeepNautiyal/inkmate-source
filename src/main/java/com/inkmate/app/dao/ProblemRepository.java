@@ -4,6 +4,7 @@ import com.inkmate.app.data.Problem;
 import com.inkmate.app.data.Solution;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,10 +16,10 @@ import java.util.List;
 @Repository
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
-    @Query("SELECT  all FROM  Problem WHERE Title = :title")
-    Problem findByTitle(String title);
+    @Query("SELECT p FROM Problem p WHERE p.title =:title")
+    Problem findByTitle(@Param("title")String title);
 
-    @Query(value = "SELECT * FROM Problem s WHERE MATCH(s.Title) AGAINST(:title IN NATURAL LANGUAGE MODE) ",
+    @Query(value = "SELECT p FROM Problem p WHERE MATCH(p.Title) AGAINST(:title IN NATURAL LANGUAGE MODE)",
             nativeQuery = true)
-    Problem findByTitleSearch(String title);
+    Problem findByTitleSearch(@Param("title")String title);
 }

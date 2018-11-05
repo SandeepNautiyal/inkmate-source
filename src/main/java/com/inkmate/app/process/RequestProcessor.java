@@ -1,8 +1,6 @@
 package com.inkmate.app.process;
 
-import com.inkmate.app.data.CombinedEntity;
-import com.inkmate.app.data.Problem;
-import com.inkmate.app.data.Solution;
+import com.inkmate.app.data.*;
 import com.inkmate.app.exception.GitException;
 import com.inkmate.app.service.GitService;
 import com.inkmate.app.service.PersistenceService;
@@ -20,6 +18,15 @@ public class RequestProcessor implements ProcessingSerivce {
 
     @Autowired
     private PersistenceService service;
+
+    @Autowired
+    private FullTextSearchQueryProcessor ftsProcessor;
+
+    @Override
+    public ProblemList findMatchingProblems(String title) throws ProcessingException{
+        List<Problem> problems = ftsProcessor.getMatchingProblems(title);
+        return new ProblemList(problems);
+    }
 
     @Override
     public CombinedEntity findSolution(String title) throws ProcessingException{
