@@ -31,7 +31,7 @@ public class PersistenceManager implements PersistenceService {
 
     @Override
     public Problem getProblem(long id) {
-        return problemRepo.findById(id).get();
+        return problemRepo.findById(id);
     }
 
 }

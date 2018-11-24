@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Repository
 public interface SolutionRepository extends JpaRepository<Solution, Long> {
 
     @Query(value = "SELECT u, a FROM  Solution u INNER JOIN SolutionReaction a ON a.SolutionId = u.SolutionId WHERE a.SolutionId = :solutionId"

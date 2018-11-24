@@ -13,13 +13,15 @@ import java.util.List;
 //import org.springframework.data.jpa.repository.JpaRepository;
 
 
-@Repository
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
-    @Query("SELECT p FROM Problem p WHERE p.title =:title")
+    @Query("SELECT p FROM Problem AS p WHERE p.title =:title")
     Problem findByTitle(@Param("title")String title);
 
     @Query(value = "SELECT p FROM Problem p WHERE MATCH(p.Title) AGAINST(:title IN NATURAL LANGUAGE MODE)",
             nativeQuery = true)
     Problem findByTitleSearch(@Param("title")String title);
+
+    @Query(value = "SELECT p FROM Problem p WHERE p.problemId = ?1")
+    Problem findById(@Param("problemId")long problemId);
 }

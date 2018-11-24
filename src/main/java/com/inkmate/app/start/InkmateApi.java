@@ -43,7 +43,7 @@ public class InkmateApi {
         return new ResponseEntity<CombinedEntity>(entity, HttpStatus.OK);
     }
 
-    @RequestMapping(value="/id/{id}", method = GET, produces = "application/json")
+    @RequestMapping(value="/solution/{id}", method = GET, produces = "application/json")
     public ResponseEntity<CombinedEntity> findSolution(@PathVariable("id") long id) {
         System.out.println("findSolution -> title="+id);
         CombinedEntity entity = null;
@@ -68,6 +68,18 @@ public class InkmateApi {
         }
 
         return new ResponseEntity<ProblemList>(entity, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/problem/{id}", method = GET, produces = "application/json")
+    public CombinedEntity findProblem(@PathVariable("id") long id) {
+        System.out.println("findSolution -> id="+id);
+        CombinedEntity entity = null;
+        try {
+            entity = service.findProblem(id);
+        } catch (ProcessingException e) {
+            e.printStackTrace();
+        }
+        return entity;
     }
 }
 

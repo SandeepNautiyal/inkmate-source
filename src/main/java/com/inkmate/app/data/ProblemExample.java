@@ -19,7 +19,7 @@ public class ProblemExample {
     private Problem problem;
 
     @Column(name="ProblemId")
-    private String problemId;
+    private long problemId;
 
     @Column(name="Description")
     private String description;

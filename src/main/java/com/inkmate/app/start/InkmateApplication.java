@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan("com.inkmate.app.data")
 @EnableJpaRepositories(basePackages = "com.inkmate.app.dao")
 public class InkmateApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(InkmateApplication.class, args);
     }

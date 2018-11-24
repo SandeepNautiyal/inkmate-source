@@ -15,4 +15,6 @@ public interface ProcessingSerivce {
     CombinedEntity findSolution(String problemTitle) throws ProcessingException;
 
     CombinedEntity findSolution(long id) throws ProcessingException;
+
+    CombinedEntity findProblem(long id) throws ProcessingException;
 }

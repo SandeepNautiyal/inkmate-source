@@ -9,6 +9,5 @@ import org.springframework.stereotype.Repository;
 //import org.springframework.data.jpa.repository.JpaRepository;
 
 
-@Repository
 public interface ProblemExampleRepository extends JpaRepository<ProblemExample, Long> {
 }

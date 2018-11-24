@@ -9,7 +9,7 @@ import java.util.List;
 public interface PersistenceService {
     public List<Solution> getSolutions(long problemId);
 
-    public Problem getProblem(long title);
+    public Problem getProblem(long problemId);
 
     public Problem getProblemByTitle(String title);
 }

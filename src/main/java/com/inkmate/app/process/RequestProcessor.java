@@ -5,9 +5,12 @@ import com.inkmate.app.exception.GitException;
 import com.inkmate.app.service.GitService;
 import com.inkmate.app.service.PersistenceService;
 import com.inkmate.app.service.ProcessingSerivce;
+import org.apache.tomcat.jni.Proc;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.inkmate.app.exception.ProcessingException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,8 +27,21 @@ public class RequestProcessor implements ProcessingSerivce {
 
     @Override
     public ProblemList findMatchingProblems(String title) throws ProcessingException{
-        List<Problem> problems = ftsProcessor.getMatchingProblems(title);
-        return new ProblemList(problems);
+        List<Problem> problems = ftsProcessor.getProblem(title);
+        List<Problem> result = new ArrayList<>();
+        for(Problem prob : problems){
+            System.out.println("problem id  ========================== "+prob.getProblemId()+" title  = "+prob.getTitle());
+
+//            List<Solution> solutions = service.getSolutions(prob.getProblemId());
+//            System.out.println("problem result =========  ==================solutions======== "+solutions);
+
+            Problem problem = ftsProcessor.getProblem(prob.getProblemId());
+            //Problem prob1  = service.getProblem(prob.getProblemId());
+            System.out.println("problem result =========  ========================== "+problem);
+
+            result.add(problem);
+        }
+        return new ProblemList(result);
     }
 
     @Override
@@ -51,9 +67,9 @@ public class RequestProcessor implements ProcessingSerivce {
 
     @Override
     public CombinedEntity findSolution(long problemId) throws ProcessingException {
-        Problem prob =  service.getProblem(problemId);
+        Problem prob =  ftsProcessor.getProblem(problemId);
         if (prob != null) {
-            List<Solution> solutions = service.getSolutions(prob.getProblemId());
+            List<Solution> solutions = ftsProcessor.getSolution(prob.getProblemId());
             try {
                 for (Solution s : solutions) {
                     String content = gitService.readFromGit(s.getClassName());
@@ -66,5 +82,10 @@ public class RequestProcessor implements ProcessingSerivce {
         } else {
             throw new ProcessingException("Invalid Problem");
         }
+    }
+
+    @Override
+    public CombinedEntity findProblem(long id) throws ProcessingException {
+        return new CombinedEntity(ftsProcessor.getProblem(id), null);
     }
 }
