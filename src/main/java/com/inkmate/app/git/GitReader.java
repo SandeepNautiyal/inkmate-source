@@ -31,6 +31,7 @@ public class GitReader implements GitService {
     public void initRepo() throws GitException {
         try {
             String gitToken  = processor.getGitToken().getGitToken();
+            System.out.println("git token =============================== "+gitToken);
             GitHubClient client = new GitHubClient().setCredentials("SandeepNautiyal", gitToken);
             RepositoryService repoService = new RepositoryService(client);
             repository = repoService.getRepository("SandeepNautiyal", "inkmatecodingproblems");
