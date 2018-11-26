@@ -31,7 +31,7 @@ public class FullTextSearchQueryProcessor {
 
     private String PROBLEM_EXAMPLE_SEARCH_QUERY_BY_ID = "SELECT Id, ProblemId, Description, Data, Visualization, Result, ResultExplaination FROM ProblemExample where ProblemId = ?";
 
-    private String GIT_TOKEN="Select top 1 * from Credentials";
+    private String GIT_TOKEN="Select * from Credentials";
     @PersistenceContext
     private EntityManager entityManager;
 
