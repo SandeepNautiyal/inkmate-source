@@ -23,7 +23,7 @@ public class GitReader implements GitService {
 
     @PostConstruct
     public void initRepo() throws GitException {
-        GitHubClient client = new GitHubClient().setCredentials("SandeepNautiyal", "810a6cc70a5f827dcb7f6e0aaaed9a3eae24ef63");
+        GitHubClient client = new GitHubClient().setCredentials("SandeepNautiyal", "627fd8b5a2e9ea7ed02f553b096e504c2b44f37d");
         RepositoryService repoService = new RepositoryService(client);
         try {
             repository = repoService.getRepository("SandeepNautiyal", "inkmatecodingproblems");
