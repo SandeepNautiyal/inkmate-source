@@ -1,6 +1,8 @@
 package com.inkmate.app.git;
 
 import com.inkmate.app.exception.GitException;
+import com.inkmate.app.exception.ProcessingException;
+import com.inkmate.app.process.FullTextSearchQueryProcessor;
 import com.inkmate.app.service.GitService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.eclipse.egit.github.core.Repository;
@@ -8,6 +10,7 @@ import org.eclipse.egit.github.core.RepositoryContents;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.ContentsService;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -21,14 +24,18 @@ public class GitReader implements GitService {
 
     private ContentsService contentService = null;
 
+    @Autowired
+    private FullTextSearchQueryProcessor processor;
+
     @PostConstruct
     public void initRepo() throws GitException {
-        GitHubClient client = new GitHubClient().setCredentials("SandeepNautiyal", "627fd8b5a2e9ea7ed02f553b096e504c2b44f37d");
-        RepositoryService repoService = new RepositoryService(client);
         try {
+            String gitToken  = processor.getGitToken().getGitToken();
+            GitHubClient client = new GitHubClient().setCredentials("SandeepNautiyal", gitToken);
+            RepositoryService repoService = new RepositoryService(client);
             repository = repoService.getRepository("SandeepNautiyal", "inkmatecodingproblems");
             contentService = new ContentsService(client);
-        } catch (IOException e) {
+        } catch (ProcessingException | IOException e) {
             throw new GitException("Unable to read from Repo", e);
         }
     }

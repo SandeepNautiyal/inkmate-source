@@ -7,7 +7,7 @@ public class GitException extends Exception {
         super(invalid_problem);
     }
 
-    public GitException(String msg, IOException e) {
+    public GitException(String msg, Throwable e) {
         super(msg, e);
     }
 }

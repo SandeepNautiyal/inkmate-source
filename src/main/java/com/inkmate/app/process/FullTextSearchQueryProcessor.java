@@ -1,5 +1,6 @@
 package com.inkmate.app.process;
 
+import com.inkmate.app.data.GitToken;
 import com.inkmate.app.data.Problem;
 import com.inkmate.app.data.ProblemExample;
 import com.inkmate.app.data.Solution;
@@ -30,6 +31,7 @@ public class FullTextSearchQueryProcessor {
 
     private String PROBLEM_EXAMPLE_SEARCH_QUERY_BY_ID = "SELECT Id, ProblemId, Description, Data, Visualization, Result, ResultExplaination FROM ProblemExample where ProblemId = ?";
 
+    private String GIT_TOKEN="Select top 1 * from Credentials";
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -134,4 +136,19 @@ public class FullTextSearchQueryProcessor {
         return solutions;
     }
 
+    public GitToken getGitToken() throws ProcessingException{
+        GitToken gitToken = new GitToken();
+        try{
+            PreparedStatement statement  = datasource.getConnection().prepareStatement(GIT_TOKEN);
+            ResultSet rs  = statement.executeQuery();
+            while (rs.next()) {
+                gitToken.setGitToken(rs.getString(1));
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            throw new ProcessingException("Could not retrive matching titles");
+        }
+        return gitToken;
+    }
 }
