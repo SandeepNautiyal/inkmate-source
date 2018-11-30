@@ -59,7 +59,7 @@ public class InkmateApi {
 
     @RequestMapping(value="/list/{title}", method = GET, produces = "application/json")
     public ResponseEntity<ProblemList> listMatchingProblems(@PathVariable("title") String title) {
-        System.out.println("findSolution -> title="+title);
+        System.out.println("listMatchingProblems -> title="+title);
         ProblemList entity = null;
         try {
             entity =  service.findMatchingProblems(title);
@@ -72,7 +72,7 @@ public class InkmateApi {
 
     @RequestMapping(value="/problem/{id}", method = GET, produces = "application/json")
     public CombinedEntity findProblem(@PathVariable("id") long id) {
-        System.out.println("findSolution -> id="+id);
+        System.out.println("findProblem -> id="+id);
         CombinedEntity entity = null;
         try {
             entity = service.findProblem(id);
