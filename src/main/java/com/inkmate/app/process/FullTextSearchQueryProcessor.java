@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,10 +41,14 @@ public class FullTextSearchQueryProcessor {
 
     public List<Problem> getProblem(String title) throws ProcessingException{
         List<Problem> problems = new ArrayList<Problem>();
+        Connection con = null;
+        PreparedStatement stmt  = null;
+        ResultSet rs =null;
         try{
-            PreparedStatement statement  = datasource.getConnection().prepareStatement(FULL_TEXT_SEARCH_TITLE_BASED);
-            statement.setString(1, title);
-            ResultSet rs  = statement.executeQuery();
+            con  = datasource.getConnection();
+            stmt  = con.prepareStatement(FULL_TEXT_SEARCH_TITLE_BASED);
+            stmt.setString(1, title);
+            rs  = stmt.executeQuery();
             while (rs.next()) {
                 Problem problem = new Problem();
                 problem.setProblemId(rs.getInt(1));
@@ -60,16 +65,29 @@ public class FullTextSearchQueryProcessor {
             e.printStackTrace();
             throw new ProcessingException("Could not retrive matching titles");
         }
+        finally{
+            try {
+                if(rs != null) rs.close();
+                if(stmt != null) stmt.close();
+                if(con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return problems;
     }
 
 
     public Problem getProblem(long problemId) throws ProcessingException{
         Problem problem = new Problem();
+        Connection con = null;
+        PreparedStatement stmt  = null;
+        ResultSet rs =null;
         try{
-            PreparedStatement statement  = datasource.getConnection().prepareStatement(PROBLEM_SEARCH_QUERY_BY_ID);
-            statement.setLong(1, problemId);
-            ResultSet rs  = statement.executeQuery();
+            con = datasource.getConnection();
+            stmt  = con.prepareStatement(PROBLEM_SEARCH_QUERY_BY_ID);
+            stmt.setLong(1, problemId);
+            rs  = stmt.executeQuery();
             while (rs.next()) {
                 //Problem person = new Problem();
                 problem.setProblemId(rs.getInt(1));
@@ -88,24 +106,51 @@ public class FullTextSearchQueryProcessor {
             e.printStackTrace();
             throw new ProcessingException("Could not retrive matching titles");
         }
+        finally{
+            try {
+                if(rs != null) rs.close();
+                if(stmt != null) stmt.close();
+                if(con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return problem;
     }
 
-    private Set<ProblemExample> getProblemExample(long problemId) throws SQLException {
-        PreparedStatement st  = datasource.getConnection().prepareStatement(PROBLEM_EXAMPLE_SEARCH_QUERY_BY_ID);
-        st.setLong(1, problemId);
-        ResultSet rs  = st.executeQuery();
+    private Set<ProblemExample> getProblemExample(long problemId) {
         Set<ProblemExample> examples =  new HashSet<>();
-        while (rs.next()) {
-            ProblemExample example = new ProblemExample();
-            example.setId(rs.getLong(1));
-            example.setProblemId(rs.getLong(2));
-            example.setDescription(rs.getString(3));
-            example.setData(rs.getString(4));
-            example.setVisualization(rs.getString(5));
-            example.setResult(rs.getString(6));
-            example.setResultExplaination(rs.getString(7));
-            examples.add(example);
+        Connection con = null;
+        PreparedStatement stmt  = null;
+        ResultSet rs =null;
+        try{
+            con = datasource.getConnection();
+            stmt  = con.prepareStatement(PROBLEM_EXAMPLE_SEARCH_QUERY_BY_ID);
+            stmt.setLong(1, problemId);
+            rs  = stmt.executeQuery();
+            while (rs.next()) {
+                ProblemExample example = new ProblemExample();
+                example.setId(rs.getLong(1));
+                example.setProblemId(rs.getLong(2));
+                example.setDescription(rs.getString(3));
+                example.setData(rs.getString(4));
+                example.setVisualization(rs.getString(5));
+                example.setResult(rs.getString(6));
+                example.setResultExplaination(rs.getString(7));
+                examples.add(example);
+            }
+        }
+        catch (SQLException e){
+
+        }
+        finally {
+            try {
+                if(rs != null) rs.close();
+                if(stmt != null) stmt.close();
+                if(con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return examples;
     }
@@ -113,10 +158,14 @@ public class FullTextSearchQueryProcessor {
 
     public List<Solution> getSolution(long problemId) throws ProcessingException{
         List<Solution> solutions = new ArrayList<Solution>();
+        Connection con = null;
+        PreparedStatement stmt  = null;
+        ResultSet rs =null;
         try{
-            PreparedStatement statement  = datasource.getConnection().prepareStatement(SOLUTION_SEARCH_QUERY_BY_ID);
-            statement.setLong(1, problemId);
-            ResultSet rs  = statement.executeQuery();
+            con = datasource.getConnection();
+            stmt  = con.prepareStatement(SOLUTION_SEARCH_QUERY_BY_ID);
+            stmt.setLong(1, problemId);
+            rs  = stmt.executeQuery();
             while (rs.next()) {
                 Solution solution = new Solution();
                 solution.setSolutionId(rs.getInt(1));
@@ -133,14 +182,27 @@ public class FullTextSearchQueryProcessor {
             e.printStackTrace();
             throw new ProcessingException("Could not retrive matching titles");
         }
+        finally {
+            try {
+                if(rs != null) rs.close();
+                if(stmt != null) stmt.close();
+                if(con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         return solutions;
     }
 
     public GitToken getGitToken() throws ProcessingException{
         GitToken gitToken = new GitToken();
+        Connection con = null;
+        PreparedStatement stmt  = null;
+        ResultSet rs =null;
         try{
-            PreparedStatement statement  = datasource.getConnection().prepareStatement(GIT_TOKEN);
-            ResultSet rs  = statement.executeQuery();
+            con = datasource.getConnection();
+            stmt  = con.prepareStatement(GIT_TOKEN);
+            rs  = stmt.executeQuery();
             while (rs.next()) {
                 gitToken.setGitToken(rs.getString(1));
             }
@@ -148,6 +210,15 @@ public class FullTextSearchQueryProcessor {
         catch(SQLException e){
             e.printStackTrace();
             throw new ProcessingException("Could not retrive matching titles");
+        }
+        finally {
+            try {
+                if(rs != null) rs.close();
+                if(stmt != null) stmt.close();
+                if(con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return gitToken;
     }
