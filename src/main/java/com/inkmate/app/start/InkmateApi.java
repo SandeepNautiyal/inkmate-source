@@ -1,11 +1,13 @@
 package com.inkmate.app.start;
 
 import com.inkmate.app.data.CombinedEntity;
+import com.inkmate.app.data.Problem;
 import com.inkmate.app.data.ProblemList;
 import com.inkmate.app.data.Solution;
 import com.inkmate.app.exception.ProcessingException;
 import com.inkmate.app.service.GitService;
 import com.inkmate.app.service.ProcessingSerivce;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+@Slf4j
 @RestController
 @RequestMapping(value="/api")
 public class InkmateApi {
@@ -31,7 +34,9 @@ public class InkmateApi {
 
     @RequestMapping(value="/title/{title}", method = GET, produces = "application/json")
     public ResponseEntity<CombinedEntity> findSolution(@PathVariable("title") String title) {
-        System.out.println("findSolution -> title="+title);
+        if(log.isDebugEnabled())
+            log.debug("findSolution -> title="+title);
+
         CombinedEntity entity = null;
         try {
              entity =  service.findSolution(title);
@@ -39,13 +44,17 @@ public class InkmateApi {
             e.printStackTrace();
         }
 
-        //System.out.println("repo ==================== "+repo.findAll());
+        if(log.isDebugEnabled())
+            log.debug("findSolution <- return="+entity);
+
         return new ResponseEntity<CombinedEntity>(entity, HttpStatus.OK);
     }
 
     @RequestMapping(value="/solution/{id}", method = GET, produces = "application/json")
     public ResponseEntity<CombinedEntity> findSolution(@PathVariable("id") long id) {
-        System.out.println("findSolution -> title="+id);
+        if(log.isDebugEnabled())
+            log.debug("findSolution -> id="+id);
+
         CombinedEntity entity = null;
         try {
             entity =  service.findSolution(id);
@@ -53,13 +62,17 @@ public class InkmateApi {
             e.printStackTrace();
         }
 
-        //System.out.println("repo ==================== "+repo.findAll());
+        if(log.isDebugEnabled())
+            log.debug("findSolution <- return="+entity);
+
         return new ResponseEntity<CombinedEntity>(entity, HttpStatus.OK);
     }
 
     @RequestMapping(value="/list/{title}", method = GET, produces = "application/json")
     public ResponseEntity<ProblemList> listMatchingProblems(@PathVariable("title") String title) {
-        System.out.println("listMatchingProblems -> title="+title);
+        if(log.isDebugEnabled())
+            log.debug("listMatchingProblems -> title="+title);
+
         ProblemList entity = null;
         try {
             entity =  service.findMatchingProblems(title);
@@ -67,18 +80,63 @@ public class InkmateApi {
             e.printStackTrace();
         }
 
+        if(log.isDebugEnabled())
+            log.debug("listMatchingProblems <- return="+entity);
+
         return new ResponseEntity<ProblemList>(entity, HttpStatus.OK);
     }
 
     @RequestMapping(value="/problem/{id}", method = GET, produces = "application/json")
     public CombinedEntity findProblem(@PathVariable("id") long id) {
-        System.out.println("findProblem -> id="+id);
+        if(log.isDebugEnabled())
+            log.debug("findProblem -> id="+id);
+
         CombinedEntity entity = null;
         try {
             entity = service.findProblem(id);
         } catch (ProcessingException e) {
             e.printStackTrace();
         }
+
+        if(log.isDebugEnabled())
+            log.debug("findProblem <- return="+entity);
+
+        return entity;
+    }
+
+    @RequestMapping(value="/problemByTag/{tag}", method = GET, produces = "application/json")
+    public ProblemList findProblemByTag(@PathVariable("tag") String tag) {
+        if(log.isDebugEnabled())
+            log.debug("findProblemByTag -> tag="+tag);
+
+        ProblemList entity = null;
+        try {
+            entity = service.findProblemByTag(tag);
+        } catch (ProcessingException e) {
+            e.printStackTrace();
+        }
+
+        if(log.isDebugEnabled())
+            log.debug("findProblemByTag <- return="+entity);
+
+        return entity;
+    }
+
+    @RequestMapping(value="/problemByDifficultyLevel/{level}", method = GET, produces = "application/json")
+    public ProblemList findProblemByDifficultyLevel(@PathVariable("level") String level) {
+        if(log.isDebugEnabled())
+            log.debug("problemByDifficultyLevel -> level="+level);
+
+        ProblemList entity = null;
+        try {
+            entity = service.findProblemByDifficultyLevel(level);
+        } catch (ProcessingException e) {
+            e.printStackTrace();
+        }
+
+        if(log.isDebugEnabled())
+            log.debug("problemByDifficultyLevel <- return="+entity);
+
         return entity;
     }
 }

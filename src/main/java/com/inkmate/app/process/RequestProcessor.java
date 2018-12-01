@@ -5,7 +5,6 @@ import com.inkmate.app.exception.GitException;
 import com.inkmate.app.service.GitService;
 import com.inkmate.app.service.PersistenceService;
 import com.inkmate.app.service.ProcessingSerivce;
-import org.apache.tomcat.jni.Proc;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.inkmate.app.exception.ProcessingException;
 import org.springframework.stereotype.Service;
@@ -87,5 +86,15 @@ public class RequestProcessor implements ProcessingSerivce {
     @Override
     public CombinedEntity findProblem(long id) throws ProcessingException {
         return new CombinedEntity(ftsProcessor.getProblem(id), null);
+    }
+
+    @Override
+    public ProblemList findProblemByTag(String tag) throws ProcessingException {
+        return new ProblemList(ftsProcessor.findProblemByTag(tag));
+    }
+
+    @Override
+    public ProblemList findProblemByDifficultyLevel(String level) throws ProcessingException {
+        return new ProblemList(ftsProcessor.findProblemByDifficultyLevel(level));
     }
 }

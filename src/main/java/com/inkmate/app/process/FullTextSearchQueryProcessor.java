@@ -5,6 +5,7 @@ import com.inkmate.app.data.Problem;
 import com.inkmate.app.data.ProblemExample;
 import com.inkmate.app.data.Solution;
 import com.inkmate.app.exception.ProcessingException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class FullTextSearchQueryProcessor {
 
@@ -28,18 +30,25 @@ public class FullTextSearchQueryProcessor {
     private String PROBLEM_SEARCH_QUERY_BY_ID = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
             " FROM  Problem p where p.ProblemId = ?";
 
+    private String PROBLEM_SEARCH_QUERY_BY_TAG = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
+            " FROM  Problem p where UPPER(p.Tag) = UPPER(?)";
+
+    private String PROBLEM_SEARCH_QUERY_BY_LEVEl = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
+            " FROM  Problem p where UPPER(p.DifficultyLevel) = UPPER(?)";
+
     private String SOLUTION_SEARCH_QUERY_BY_ID = "SELECT SolutionId, ProblemId, Description, Class, Langauge, Email, Author FROM  Solution where ProblemId = ?";
 
     private String PROBLEM_EXAMPLE_SEARCH_QUERY_BY_ID = "SELECT Id, ProblemId, Description, Data, Visualization, Result, ResultExplaination FROM ProblemExample where ProblemId = ?";
 
     private String GIT_TOKEN="Select * from Credentials";
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Autowired
     private DataSource datasource;
 
     public List<Problem> getProblem(String title) throws ProcessingException{
+        if(log.isDebugEnabled())
+            log.debug("getProblem -> title="+title);
+
         List<Problem> problems = new ArrayList<Problem>();
         Connection con = null;
         PreparedStatement stmt  = null;
@@ -74,11 +83,16 @@ public class FullTextSearchQueryProcessor {
                 e.printStackTrace();
             }
         }
+        if(log.isDebugEnabled())
+            log.debug("getProblem <- return="+problems);
         return problems;
     }
 
 
     public Problem getProblem(long problemId) throws ProcessingException{
+        if(log.isDebugEnabled())
+            log.debug("getProblem -> problemId="+problemId);
+
         Problem problem = new Problem();
         Connection con = null;
         PreparedStatement stmt  = null;
@@ -115,10 +129,14 @@ public class FullTextSearchQueryProcessor {
                 e.printStackTrace();
             }
         }
+        if(log.isDebugEnabled())
+            log.debug("getProblem <- return="+problem);
         return problem;
     }
 
     private Set<ProblemExample> getProblemExample(long problemId) {
+        if(log.isDebugEnabled())
+            log.debug("getProblemExample -> problemId="+problemId);
         Set<ProblemExample> examples =  new HashSet<>();
         Connection con = null;
         PreparedStatement stmt  = null;
@@ -152,11 +170,18 @@ public class FullTextSearchQueryProcessor {
                 e.printStackTrace();
             }
         }
+
+        if(log.isDebugEnabled())
+            log.debug("getSolution <- return="+examples);
+
         return examples;
     }
 
 
     public List<Solution> getSolution(long problemId) throws ProcessingException{
+        if(log.isDebugEnabled())
+            log.debug("getSolution -> problemId="+problemId);
+
         List<Solution> solutions = new ArrayList<Solution>();
         Connection con = null;
         PreparedStatement stmt  = null;
@@ -191,10 +216,17 @@ public class FullTextSearchQueryProcessor {
                 e.printStackTrace();
             }
         }
+
+        if(log.isDebugEnabled())
+            log.debug("getSolution <- return="+solutions);
+
         return solutions;
     }
 
     public GitToken getGitToken() throws ProcessingException{
+        if(log.isDebugEnabled())
+            log.debug("getGitToken -> ");
+
         GitToken gitToken = new GitToken();
         Connection con = null;
         PreparedStatement stmt  = null;
@@ -220,6 +252,88 @@ public class FullTextSearchQueryProcessor {
                 e.printStackTrace();
             }
         }
+
+        if(log.isDebugEnabled())
+            log.debug("getGitToken <- return="+gitToken);
+
         return gitToken;
+    }
+
+    public List<Problem> findProblemByTag(String tag) throws ProcessingException {
+        List<Problem> problems = new ArrayList<Problem>();
+        Connection con = null;
+        PreparedStatement stmt  = null;
+        ResultSet rs =null;
+        try{
+            con  = datasource.getConnection();
+            stmt  = con.prepareStatement(PROBLEM_SEARCH_QUERY_BY_TAG);
+            stmt.setString(1, tag);
+            rs  = stmt.executeQuery();
+            while (rs.next()) {
+                Problem problem = new Problem();
+                problem.setProblemId(rs.getInt(1));
+                problem.setTitle(rs.getString(2));
+                problem.setEmail(rs.getString(3));
+                problem.setProblemDescription(rs.getString(4));
+                problem.setTags(rs.getString(5));
+                problem.setAuthor(rs.getString(6));
+                problem.setDifficultyLevel(rs.getString(7));
+                problems.add(problem);
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            throw new ProcessingException("Could not retrive matching titles");
+        }
+        finally{
+            try {
+                if(rs != null) rs.close();
+                if(stmt != null) stmt.close();
+                if(con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return problems;
+    }
+
+    public List<Problem> findProblemByDifficultyLevel(String level) throws ProcessingException{
+        List<Problem> problems = new ArrayList<Problem>();
+        Connection con = null;
+        PreparedStatement stmt  = null;
+        ResultSet rs =null;
+        try{
+            con  = datasource.getConnection();
+            stmt  = con.prepareStatement(PROBLEM_SEARCH_QUERY_BY_LEVEl);
+            stmt.setString(1, level);
+            rs  = stmt.executeQuery();
+            while (rs.next()) {
+                Problem problem = new Problem();
+                problem.setProblemId(rs.getInt(1));
+                problem.setTitle(rs.getString(2));
+                problem.setEmail(rs.getString(3));
+                problem.setProblemDescription(rs.getString(4));
+                problem.setTags(rs.getString(5));
+                problem.setAuthor(rs.getString(6));
+                problem.setDifficultyLevel(rs.getString(7));
+                problems.add(problem);
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+            throw new ProcessingException("Could not retrive matching titles");
+        }
+        finally{
+            try {
+                if(rs != null) rs.close();
+                if(stmt != null) stmt.close();
+                if(con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return problems;
     }
 }
