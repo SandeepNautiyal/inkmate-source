@@ -31,7 +31,7 @@ public class FullTextSearchQueryProcessor {
             " FROM  Problem p where p.ProblemId = ?";
 
     private String PROBLEM_SEARCH_QUERY_BY_TAG = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
-            " FROM  Problem p where UPPER(p.Tags) like '%UPPER(?)%'";
+            " FROM  Problem p where UPPER(p.Tags) = UPPER(?)";
 
     private String PROBLEM_SEARCH_QUERY_BY_LEVEl = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
             " FROM  Problem p where UPPER(p.DifficultyLevel) = UPPER(?)";
