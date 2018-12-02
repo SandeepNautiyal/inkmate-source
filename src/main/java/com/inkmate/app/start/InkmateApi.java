@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -32,6 +29,7 @@ public class InkmateApi {
     @Autowired
     private ProcessingSerivce service;
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value="/title/{title}", method = GET, produces = "application/json")
     public ResponseEntity<CombinedEntity> findSolution(@PathVariable("title") String title) {
         if(log.isDebugEnabled())
@@ -50,6 +48,7 @@ public class InkmateApi {
         return new ResponseEntity<CombinedEntity>(entity, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value="/solution/{id}", method = GET, produces = "application/json")
     public ResponseEntity<CombinedEntity> findSolution(@PathVariable("id") long id) {
         if(log.isDebugEnabled())
@@ -68,6 +67,7 @@ public class InkmateApi {
         return new ResponseEntity<CombinedEntity>(entity, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value="/list/{title}", method = GET, produces = "application/json")
     public ResponseEntity<ProblemList> listMatchingProblems(@PathVariable("title") String title) {
         if(log.isDebugEnabled())
@@ -86,6 +86,7 @@ public class InkmateApi {
         return new ResponseEntity<ProblemList>(entity, HttpStatus.OK);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value="/problem/{id}", method = GET, produces = "application/json")
     public CombinedEntity findProblem(@PathVariable("id") long id) {
         if(log.isDebugEnabled())
@@ -104,6 +105,7 @@ public class InkmateApi {
         return entity;
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value="/problemByTag/{tag}", method = GET, produces = "application/json")
     public ProblemList findProblemByTag(@PathVariable("tag") String tag) {
         if(log.isDebugEnabled())
@@ -122,6 +124,7 @@ public class InkmateApi {
         return entity;
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value="/problemByDifficultyLevel/{level}", method = GET, produces = "application/json")
     public ProblemList findProblemByDifficultyLevel(@PathVariable("level") String level) {
         if(log.isDebugEnabled())
