@@ -25,7 +25,7 @@ public class Problem {
     private String problemDescription;
 
     @Column(name="Tags")
-    private String tags;
+    private List<String> tags;
 
     @Column(name="Category")
     private String category;

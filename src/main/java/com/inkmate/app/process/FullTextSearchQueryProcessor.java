@@ -16,10 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -69,7 +66,7 @@ public class FullTextSearchQueryProcessor {
                 problem.setTitle(rs.getString(2));
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
-                problem.setTags(rs.getString(5));
+                problem.setTags(Arrays.asList(rs.getString(5).split(",")));
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
                 problems.add(problem);
@@ -113,7 +110,7 @@ public class FullTextSearchQueryProcessor {
                 problem.setTitle(rs.getString(2));
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
-                problem.setTags(rs.getString(5));
+                problem.setTags(Arrays.asList(rs.getString(5).split(",")));
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
             }
@@ -284,7 +281,7 @@ public class FullTextSearchQueryProcessor {
                 problem.setTitle(rs.getString(2));
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
-                problem.setTags(rs.getString(5));
+                problem.setTags(Arrays.asList(rs.getString(5).split(",")));
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
                 problems.add(problem);
@@ -323,7 +320,7 @@ public class FullTextSearchQueryProcessor {
                 problem.setTitle(rs.getString(2));
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
-                problem.setTags(rs.getString(5));
+                problem.setTags(Arrays.asList(rs.getString(5).split(",")));
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
                 problems.add(problem);
@@ -361,7 +358,7 @@ public class FullTextSearchQueryProcessor {
                 problem.setTitle(rs.getString(2));
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
-                problem.setTags(rs.getString(5));
+                problem.setTags(Arrays.asList(rs.getString(5).split(",")));
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
                 problems.add(problem);
