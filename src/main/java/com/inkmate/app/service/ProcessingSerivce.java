@@ -17,4 +17,6 @@ public interface ProcessingSerivce {
     ProblemList findProblemByTag(String tag) throws ProcessingException;
 
     ProblemList findProblemByDifficultyLevel(String level) throws ProcessingException;
+
+    ProblemList listAllProblems() throws ProcessingException;
 }

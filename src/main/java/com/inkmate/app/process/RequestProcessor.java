@@ -97,4 +97,9 @@ public class RequestProcessor implements ProcessingSerivce {
     public ProblemList findProblemByDifficultyLevel(String level) throws ProcessingException {
         return new ProblemList(ftsProcessor.findProblemByDifficultyLevel(level));
     }
+
+    @Override
+    public ProblemList listAllProblems() throws ProcessingException {
+        return new ProblemList(ftsProcessor.listAllProblems());
+    }
 }
