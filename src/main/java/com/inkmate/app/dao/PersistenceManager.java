@@ -12,26 +12,34 @@ import java.util.List;
 
 @Service
 public class PersistenceManager implements PersistenceService {
-
-    @Autowired
-    private SolutionRepository solutionRepo;
-
-    @Autowired
-    private ProblemRepository problemRepo;
-
     @Override
     public List<Solution> getSolutions(long problemId) {
-        return solutionRepo.findAllById(Arrays.asList(problemId));
+        return null;
     }
 
     @Override
-    public Problem getProblemByTitle(String title){
-        return  problemRepo.findByTitle(title);
+    public Problem getProblem(long problemId) {
+        return null;
     }
 
     @Override
-    public Problem getProblem(long id) {
-        return problemRepo.findById(id);
+    public Problem getProblemByTitle(String title) {
+        return null;
     }
+
+//    @Override
+//    public List<Solution> getSolutions(long problemId) {
+//        return solutionRepo.findAllById(Arrays.asList(problemId));
+//    }
+//
+//    @Override
+//    public Problem getProblemByTitle(String title){
+//        return  problemRepo.findByTitle(title);
+//    }
+//
+//    @Override
+//    public Problem getProblem(long id) {
+//        return problemRepo.findById(id);
+//    }
 
 }

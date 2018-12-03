@@ -18,8 +18,8 @@ public class RequestProcessor implements ProcessingSerivce {
     @Autowired
     private GitService gitService;
 
-    @Autowired
-    private PersistenceService service;
+//    @Autowired
+//    private PersistenceService service;
 
     @Autowired
     private FullTextSearchQueryProcessor ftsProcessor;
@@ -44,25 +44,30 @@ public class RequestProcessor implements ProcessingSerivce {
     }
 
     @Override
-    public CombinedEntity findSolution(String title) throws ProcessingException{
-        Problem prob =  service.getProblemByTitle(title);
-        if(prob != null){
-            List<Solution> solutions  = service.getSolutions(prob.getProblemId());
-            try{
-                for(Solution s : solutions){
-                    String content = gitService.readFromGit(s.getClassName());
-                    s.setSolutionContent(content);
-                }
-            }
-            catch(GitException e){
-                throw new ProcessingException("Unable to process request at this time");
-            }
-            return new CombinedEntity(prob, solutions);
-        }
-        else {
-            throw new ProcessingException("Invalid Problem");
-        }
+    public CombinedEntity findSolution(String problemTitle) throws ProcessingException {
+        return null;
     }
+
+//    @Override
+//    public CombinedEntity findSolution(String title) throws ProcessingException{
+//        Problem prob =  service.getProblemByTitle(title);
+//        if(prob != null){
+//            List<Solution> solutions  = service.getSolutions(prob.getProblemId());
+//            try{
+//                for(Solution s : solutions){
+//                    String content = gitService.readFromGit(s.getClassName());
+//                    s.setSolutionContent(content);
+//                }
+//            }
+//            catch(GitException e){
+//                throw new ProcessingException("Unable to process request at this time");
+//            }
+//            return new CombinedEntity(prob, solutions);
+//        }
+//        else {
+//            throw new ProcessingException("Invalid Problem");
+//        }
+//    }
 
     @Override
     public CombinedEntity findSolution(long problemId) throws ProcessingException {
