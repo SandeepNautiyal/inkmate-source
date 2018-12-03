@@ -27,16 +27,16 @@ public class FullTextSearchQueryProcessor {
 
     private String FULL_TEXT_SEARCH_TITLE_BASED = "SELECT ProblemId, Title, Email, ProblemDescription, Tags, Author, DifficultyLevel FROM  Problem WHERE MATCH (Title, ProblemDescription) AGAINST (? IN NATURAL LANGUAGE MODE)";
 
-    private String PROBLEM_SEARCH_QUERY_BY_ID = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
+    private String PROBLEM_SEARCH_QUERY_BY_ID = "SELECT p.ProblemId, p.Title, p.Email, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
             " FROM  Problem p where p.ProblemId = ?";
 
-    private String PROBLEM_SEARCH_QUERY_BY_TAG = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
+    private String PROBLEM_SEARCH_QUERY_BY_TAG = "SELECT p.ProblemId, p.Title, p.Email, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
             " FROM  Problem p where UPPER(p.Tags) = UPPER(?)";
 
-    private String PROBLEM_SEARCH_QUERY_BY_LEVEl = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
+    private String PROBLEM_SEARCH_QUERY_BY_LEVEl = "SELECT p.ProblemId, p.Title, p.Email, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
             " FROM  Problem p where UPPER(p.DifficultyLevel) = UPPER(?)";
 
-    private String LIST_ALL_PROBLEMS = "SELECT p.ProblemId, p.Title, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
+    private String LIST_ALL_PROBLEMS = "SELECT p.ProblemId, p.Title, p.Email, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
             " FROM  Problem p";
 
     private String SOLUTION_SEARCH_QUERY_BY_ID = "SELECT SolutionId, ProblemId, Description, Class, Langauge, Email, Author FROM  Solution where ProblemId = ?";
