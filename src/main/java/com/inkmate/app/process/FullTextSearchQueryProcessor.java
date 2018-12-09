@@ -66,10 +66,6 @@ public class FullTextSearchQueryProcessor {
                 problem.setTitle(rs.getString(2));
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
-                String tags = rs.getString(5);
-                if(tags != null && !tags.isEmpty()){
-                    problem.setTags(Arrays.asList(tags.split(",")));
-                }
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
                 problems.add(problem);
@@ -293,7 +289,6 @@ public class FullTextSearchQueryProcessor {
                     problem.setTitle(rs.getString(2));
                     problem.setEmail(rs.getString(3));
                     problem.setProblemDescription(rs.getString(4));
-                    String tags = rs.getString(5);
 //                    if(tags != null && !tags.isEmpty()){
 //                        problem.setTags(Arrays.asList(tags.split(",")));
 //                    }
