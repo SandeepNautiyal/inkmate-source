@@ -25,13 +25,13 @@ public class FullTextSearchQueryProcessor {
     private String FULL_TEXT_SEARCH_TITLE_BASED = "SELECT ProblemId, Title, Email, ProblemDescription, Tags, Author, DifficultyLevel FROM  Problem WHERE MATCH (Title, ProblemDescription) AGAINST (? IN NATURAL LANGUAGE MODE)";
 
     private String PROBLEM_SEARCH_QUERY_BY_ID = "SELECT p.ProblemId, p.Title, p.Email, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
-            " FROM  Problem p where p.ProblemId = ?";
+            ", t.Tag FROM  Problem p, Tags t where p.ProblemId = t.ProblemId and p.ProblemId = ?";
 
     private String PROBLEM_SEARCH_QUERY_BY_TAG = "SELECT p.ProblemId, p.Title, p.Email, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
-            " FROM  Problem p where UPPER(p.Tags) = UPPER(?)";
+            ",  t.Tag FROM  Problem p, Tags t where p.ProblemId = t.ProblemId and UPPER(t.Tag) = UPPER(?)";
 
     private String PROBLEM_SEARCH_QUERY_BY_LEVEl = "SELECT p.ProblemId, p.Title, p.Email, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
-            " FROM  Problem p where UPPER(p.DifficultyLevel) = UPPER(?)";
+            ",  t.Tag FROM  Problem p, Tags t where p.ProblemId = t.ProblemId and UPPER(p.DifficultyLevel) = UPPER(?)";
 
     private String LIST_ALL_PROBLEMS = "SELECT p.ProblemId, p.Title, p.Email, p.ProblemDescription, p.Tags , p.Category, p.Email, p.Author,  p.RecordCreateTime, p.RecordUpdateTime, p.DifficultyLevel " +
             " FROM  Problem p";
@@ -88,11 +88,13 @@ public class FullTextSearchQueryProcessor {
                 e.printStackTrace();
             }
         }
+
+        //addTagsToProblems(problems);
+
         if(log.isDebugEnabled())
             log.debug("getProblem <- return="+problems);
         return problems;
     }
-
 
     public Problem getProblem(long problemId) throws ProcessingException{
         if(log.isDebugEnabled())
@@ -107,20 +109,22 @@ public class FullTextSearchQueryProcessor {
             stmt  = con.prepareStatement(PROBLEM_SEARCH_QUERY_BY_ID);
             stmt.setLong(1, problemId);
             rs  = stmt.executeQuery();
+            List<String> tags = new ArrayList<>();
             while (rs.next()) {
                 //Problem person = new Problem();
                 problem.setProblemId(rs.getInt(1));
                 problem.setTitle(rs.getString(2));
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
-                String tags = rs.getString(5);
-                if(tags != null && !tags.isEmpty()){
-                    problem.setTags(Arrays.asList(tags.split(",")));
-                }
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
+                String tag = rs.getString(8);
+                if(tag != null && !tag.isEmpty()){
+                    tags.add(tag);
+                }
             }
 
+            problem.setTags(tags);
             Set<ProblemExample> examples = getProblemExample(problemId);
             problem.setExamples(examples);
         }
@@ -272,7 +276,7 @@ public class FullTextSearchQueryProcessor {
     }
 
     public List<Problem> findProblemByTag(String tag) throws ProcessingException {
-        List<Problem> problems = new ArrayList<Problem>();
+        Map<Long, Problem> problems = new HashMap<Long, Problem>();
         Connection con = null;
         PreparedStatement stmt  = null;
         ResultSet rs =null;
@@ -282,18 +286,26 @@ public class FullTextSearchQueryProcessor {
             stmt.setString(1, tag);
             rs  = stmt.executeQuery();
             while (rs.next()) {
-                Problem problem = new Problem();
-                problem.setProblemId(rs.getInt(1));
-                problem.setTitle(rs.getString(2));
-                problem.setEmail(rs.getString(3));
-                problem.setProblemDescription(rs.getString(4));
-                String tags = rs.getString(5);
-                if(tags != null && !tags.isEmpty()){
-                    problem.setTags(Arrays.asList(tags.split(",")));
+                int problemId  = rs.getInt(1);
+                if(problems.get(problemId) == null){
+                    Problem problem = new Problem();
+                    problem.setProblemId(rs.getInt(1));
+                    problem.setTitle(rs.getString(2));
+                    problem.setEmail(rs.getString(3));
+                    problem.setProblemDescription(rs.getString(4));
+                    String tags = rs.getString(5);
+//                    if(tags != null && !tags.isEmpty()){
+//                        problem.setTags(Arrays.asList(tags.split(",")));
+//                    }
+                    problem.setAuthor(rs.getString(6));
+                    problem.setDifficultyLevel(rs.getString(7));
+                    problem.addTags(Arrays.asList(rs.getString(8)));
+                    problems.put(problem.getProblemId() , problem);
                 }
-                problem.setAuthor(rs.getString(6));
-                problem.setDifficultyLevel(rs.getString(7));
-                problems.add(problem);
+                else{
+                    Problem problem = problems.get(problemId);
+                    problem.addTags(Arrays.asList(rs.getString(8)));
+                }
             }
         }
         catch(SQLException e){
@@ -310,7 +322,7 @@ public class FullTextSearchQueryProcessor {
             }
         }
 
-        return problems;
+        return new ArrayList<>(problems.values());
     }
 
     public List<Problem> findProblemByDifficultyLevel(String level) throws ProcessingException{
@@ -330,9 +342,6 @@ public class FullTextSearchQueryProcessor {
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
                 String tags = rs.getString(5);
-                if(tags != null && !tags.isEmpty()){
-                    problem.setTags(Arrays.asList(tags.split(",")));
-                }
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
                 problems.add(problem);
@@ -371,9 +380,6 @@ public class FullTextSearchQueryProcessor {
                 problem.setEmail(rs.getString(3));
                 problem.setProblemDescription(rs.getString(4));
                 String tags = rs.getString(5);
-                if(tags != null && !tags.isEmpty()){
-                    problem.setTags(Arrays.asList(tags.split(",")));
-                }
                 problem.setAuthor(rs.getString(6));
                 problem.setDifficultyLevel(rs.getString(7));
                 problems.add(problem);

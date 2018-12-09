@@ -32,4 +32,8 @@ public class Problem {
     private Date recordUpdateTime;
 
     private Set<ProblemExample> examples = new HashSet<ProblemExample>();
+
+    public void addTags(List<String> tags) {
+        tags.addAll(tags);
+    }
 }
